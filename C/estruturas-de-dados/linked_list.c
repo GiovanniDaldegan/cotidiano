@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define INDEX_OUT_OF_BOUNDS 1
+#define INDEX_OUT_OF_BOUNDS -1
 
 struct Node_Int32 {
   int data;
@@ -34,7 +34,7 @@ struct LinkedList_Int32 InitLinkedList_Int32() {
 }
 
 struct Node_Int32* GetNodeAtLinkedList_Int32(struct LinkedList_Int32* list,
-                                          int index) {
+                                 int index) {
   if (index > list->size -1 || index < -list->size)
     return NULL;
 
@@ -57,10 +57,10 @@ struct Node_Int32* GetNodeAtLinkedList_Int32(struct LinkedList_Int32* list,
 int InsertAtLinkedList_Int32(struct LinkedList_Int32* list,
                              int data,
                              int index) {
-  struct Node_Int32* newNode = InitNode_Int32(data, NULL);
-
   if (index > list->size + 1 || index < -list->size)
     return INDEX_OUT_OF_BOUNDS;
+
+  struct Node_Int32* newNode = InitNode_Int32(data, NULL);
 
   if (index == 0 || list->size == 0) {
     newNode->next = list->head;
@@ -96,16 +96,16 @@ int RemoveAtLinkedList_Int32(struct LinkedList_Int32* list,
     free(prt_free);
   }
   else {
-    struct Node_Int32* temp1 = list->head;
+    struct Node_Int32* temp = list->head;
     int count = 0;
 
     while (count != index -1 && count != list->size + index -1) {
-      temp1 = temp1->next;
+      temp = temp->next;
       count++;
     }
     
-    prt_free = temp1->next;
-    temp1->next = temp1->next->next;
+    prt_free = temp->next;
+    temp->next = temp->next->next;
     free(prt_free);
   }
 
@@ -146,8 +146,7 @@ int main() {
   RemoveAtLinkedList_Int32(&list, -3);
 
   PrintLinkedList_Int32(list);
-  
-  printf("%p\n", GetNodeAtLinkedList_Int32(&list, -3));
+  printf("%d\n", GetNodeAtLinkedList_Int32(&list, -2)->data);
 
   return 0;
 }
