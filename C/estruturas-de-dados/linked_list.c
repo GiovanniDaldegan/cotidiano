@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define INVALID_OPERATION 1
+#define INDEX_OUT_OF_BOUNDS 1
 
 struct Node_Int32 {
   int data;
@@ -33,13 +33,34 @@ struct LinkedList_Int32 InitLinkedList_Int32() {
   return list;
 }
 
+struct Node_Int32* GetNodeAtLinkedList_Int32(struct LinkedList_Int32* list,
+                                          int index) {
+  if (index > list->size -1 || index < -list->size)
+    return NULL;
+
+  if (index == 0 || index == -list->size) {
+    return list->head;
+  }
+  else {
+    struct Node_Int32* temp = list->head;
+    int count = 0;
+
+    while (count != index-1 && count != list->size + index -1) {
+      temp = temp->next;
+      count++;
+    }
+
+    return temp->next;
+  }
+}
+
 int InsertAtLinkedList_Int32(struct LinkedList_Int32* list,
-                              int data,
-                              int index) {
+                             int data,
+                             int index) {
   struct Node_Int32* newNode = InitNode_Int32(data, NULL);
 
   if (index > list->size + 1 || index < -list->size)
-    return INVALID_OPERATION;
+    return INDEX_OUT_OF_BOUNDS;
 
   if (index == 0 || list->size == 0) {
     newNode->next = list->head;
@@ -49,17 +70,9 @@ int InsertAtLinkedList_Int32(struct LinkedList_Int32* list,
     struct Node_Int32* temp = list->head;
     int count = 0;
 
-    if (index > 0) {
-       while (temp->next != NULL && count != index-1) {
-        temp = temp->next;
-        count++;
-      }
-    }
-    else {
-      while (count != list->size + index) {
-        temp = temp->next;
-        count++;
-      }
+    while (count != index -1 && count != list->size + index) {
+      temp = temp->next;
+      count++;
     }
 
     newNode->next = temp->next;
@@ -71,9 +84,9 @@ int InsertAtLinkedList_Int32(struct LinkedList_Int32* list,
 }
 
 int RemoveAtLinkedList_Int32(struct LinkedList_Int32* list,
-                              int index) {
-  if (index > list->size - 1 || index < -list->size)
-    return INVALID_OPERATION;
+                             int index) {
+  if (index > list->size -1 || index < -list->size)
+    return INDEX_OUT_OF_BOUNDS;
 
   struct Node_Int32* prt_free = NULL;
 
@@ -86,17 +99,9 @@ int RemoveAtLinkedList_Int32(struct LinkedList_Int32* list,
     struct Node_Int32* temp1 = list->head;
     int count = 0;
 
-    if (index > 0) {
-      while (temp1->next == NULL || count != index - 1) {
-        temp1 = temp1->next;
-        count++;
-      }
-    }
-    else {
-      while (count != list->size + index -1) {
-        temp1 = temp1->next;
-        count++;
-      }
+    while (count != index -1 && count != list->size + index -1) {
+      temp1 = temp1->next;
+      count++;
     }
     
     prt_free = temp1->next;
@@ -141,6 +146,8 @@ int main() {
   RemoveAtLinkedList_Int32(&list, -3);
 
   PrintLinkedList_Int32(list);
+  
+  printf("%p\n", GetNodeAtLinkedList_Int32(&list, -3));
 
   return 0;
 }
