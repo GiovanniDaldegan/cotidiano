@@ -1,5 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "stack_int.h"
+
+
+struct Node
+{
+  int value;
+  struct Node* lower;
+};
 
 struct Stack
 {
@@ -17,12 +25,6 @@ struct Stack* InitStack()
   return stack;
 }
 
-struct Node
-{
-  int value;
-  struct Node* lower;
-};
-
 struct Node* InitNode(int value,
                       struct Node* lower)
 {
@@ -33,6 +35,7 @@ struct Node* InitNode(int value,
 
   return node;
 }
+
 
 void Push(struct Stack* stack,
           int value)
@@ -70,7 +73,7 @@ void DeleteStack(struct Stack* stack)
   free(stack);
 }
 
-void PrintLowerNode(struct Node* lower,
+void PrintNode(struct Node* lower,
                     int reverse)
 {
   if (lower == NULL)
@@ -79,7 +82,7 @@ void PrintLowerNode(struct Node* lower,
   if (!reverse)
     printf(" %d", lower->value);
 
-  PrintLowerNode(lower->lower, reverse);
+  PrintNode(lower->lower, reverse);
 
   if (reverse)
     printf("%d ", lower->value);
@@ -97,7 +100,7 @@ void PrintStack(struct Stack* stack,
   if (!reverse)
     printf("top ->");
 
-  PrintLowerNode(stack->top, reverse);
+  PrintNode(stack->top, reverse);
 
   if (reverse)
     printf("<- top");
