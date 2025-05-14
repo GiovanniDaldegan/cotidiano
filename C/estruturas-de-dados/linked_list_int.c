@@ -12,8 +12,7 @@ struct Node_Int32
 struct Node_Int32* InitNode_Int32(int data,
                                   struct Node_Int32* next)
 {
-  struct Node_Int32* temp =
-    (struct Node_Int32*) malloc(sizeof(struct Node_Int32));
+  struct Node_Int32* temp = malloc(sizeof(struct Node_Int32));
 
   temp->data = data;
   temp->next = next;
@@ -28,11 +27,12 @@ struct LinkedList_Int32
   struct Node_Int32* head;
 };
 
-struct LinkedList_Int32 InitLinkedList_Int32()
+struct LinkedList_Int32* InitLinkedList_Int32()
 {
-  struct LinkedList_Int32 list;
-  list.size = 0;
-  list.head = NULL;
+  struct LinkedList_Int32* list = malloc(sizeof(struct LinkedList_Int32));
+
+  list->size = 0;
+  list->head = NULL;
 
   return list;
 }
@@ -144,6 +144,24 @@ void PrintLinkedList_Int32(struct LinkedList_Int32* list)
   printf("]");
 }
 
+int IsEmptyLinkedList_Int32(struct LinkedList_Int32* list)
+{
+  return list->size == 0;
+}
+
+void ClearLinkedList(struct LinkedList_Int32* list)
+{
+  while (!IsEmptyLinkedList_Int32(list))
+    RemoveAtLinkedList_Int32(list, 0);
+}
+
+void DeleteLinkedList_Int32(struct LinkedList_Int32* list)
+{
+  ClearLinkedList(list);
+  free(list);
+}
+
+
 void PrintNextLinkedList_Int32(struct Node_Int32* node,
                                int reverse)
 {
@@ -178,36 +196,44 @@ void RecursivePrintLinkedList_Int32(struct LinkedList_Int32* list,
 }
 
 int main() {
-  struct LinkedList_Int32 list = InitLinkedList_Int32();
+  struct LinkedList_Int32* list = InitLinkedList_Int32();
 
-  InsertAtLinkedList_Int32(&list, 2, 0);
-  InsertAtLinkedList_Int32(&list, 4, 1);
-  InsertAtLinkedList_Int32(&list, 1, 0);
-  InsertAtLinkedList_Int32(&list, 3, -2);
-  InsertAtLinkedList_Int32(&list, 0, 0);
-  InsertAtLinkedList_Int32(&list, 3, -7);
-  InsertAtLinkedList_Int32(&list, 3, 37);
-  InsertAtLinkedList_Int32(&list, 5, -1);
-  InsertAtLinkedList_Int32(&list, 6, -1);
+  InsertAtLinkedList_Int32(list, 2, 0);
+  InsertAtLinkedList_Int32(list, 4, 1);
+  InsertAtLinkedList_Int32(list, 1, 0);
+  InsertAtLinkedList_Int32(list, 3, -2);
+  InsertAtLinkedList_Int32(list, 0, 0);
+  InsertAtLinkedList_Int32(list, 3, -7);
+  InsertAtLinkedList_Int32(list, 3, 37);
+  InsertAtLinkedList_Int32(list, 5, -1);
+  InsertAtLinkedList_Int32(list, 6, -1);
 
-  RemoveAtLinkedList_Int32(&list, -1);
-  RemoveAtLinkedList_Int32(&list, -2);
-  RemoveAtLinkedList_Int32(&list, -3);
-  RemoveAtLinkedList_Int32(&list, -4);
-  RemoveAtLinkedList_Int32(&list, -5);
+  RemoveAtLinkedList_Int32(list, -1);
+  RemoveAtLinkedList_Int32(list, -2);
+  RemoveAtLinkedList_Int32(list, -3);
+  RemoveAtLinkedList_Int32(list, -4);
+  RemoveAtLinkedList_Int32(list, -5);
 
   printf("Linked list: \n");
-  PrintLinkedList_Int32(&list);
+  PrintLinkedList_Int32(list);
 
   printf("\nValue at position -2: \n");
-  printf("%d", GetNodeAtLinkedList_Int32(&list, -2)->data);
+  printf("%d", GetNodeAtLinkedList_Int32(list, -2)->data);
 
   printf("\nLinked list recursive print: \n");
-  RecursivePrintLinkedList_Int32(&list, 0);
+  RecursivePrintLinkedList_Int32(list, 0);
 
   printf("\nLinked list recursive print (reverse):\n");
-  RecursivePrintLinkedList_Int32(&list, 1);
+  RecursivePrintLinkedList_Int32(list, 1);
   
+  ClearLinkedList(list);
+  printf("\nCleared list:\n");
+  PrintLinkedList_Int32(list);
+
   printf("\n");
+  
+
+  DeleteLinkedList_Int32(list);
+
   return 0;
 }
