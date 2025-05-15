@@ -108,25 +108,3 @@ void PrintStack(struct Stack* stack,
   printf("\n");
 }
 
-
-int main()
-{
-  struct Stack* stack = InitStack();
-
-  Push(stack, 0);
-  Push(stack, 1);
-  Push(stack, 2);
-  Push(stack, 3);
-  PrintStack(stack, 0);
-
-  Pop(stack);
-  PrintStack(stack, 1);
-
-  Push(stack, 3);
-  PrintStack(stack, 1);
-
-  ClearStack(stack);
-  PrintStack(stack, 0);
-
-  DeleteStack(stack);
-}
