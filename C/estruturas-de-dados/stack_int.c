@@ -1,19 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "stack_int.h"
 
-
-struct Node
-{
-  int value;
-  struct Node* lower;
-};
-
-struct Stack
-{
-  int size;
-  struct Node* top;
-};
 
 struct Stack* InitStack()
 {
@@ -25,22 +14,11 @@ struct Stack* InitStack()
   return stack;
 }
 
-struct Node* InitNode(int value,
-                      struct Node* lower)
-{
-  struct Node* node = malloc(sizeof(struct Node));
-
-  node->value = value;
-  node->lower = lower;
-
-  return node;
-}
-
 
 void Push(struct Stack* stack,
           int value)
 {
-  struct Node* newNode = InitNode(value, stack->top);
+  struct Node* newNode = InitNode(INT, &value, stack->top);
 
   stack->top = newNode;
   stack->size++;
@@ -50,15 +28,32 @@ void Pop(struct Stack* stack)
 {
   struct Node* free_ptr = stack->top;
 
-  stack->top = stack->top->lower;
+  stack->top = stack->top->link;
   free(free_ptr);
 
   stack->size--;
 }
 
-int IsEmptyStack(struct Stack* stack)
+inline int IsEmptyStack(struct Stack* stack)
+{ return stack->size == 0; }
+
+int IsInStack(struct Stack* stack,
+              int value)
 {
-  return stack->size == 0;
+  if (IsEmptyStack(stack))
+    return 0;
+
+  struct Node* temp = stack->top;
+
+  while (temp != NULL)
+  {
+    if (*((int*) temp->value) == value)
+      return 1;
+
+    temp = temp->link;
+  }
+
+  return 0;
 }
 
 void ClearStack(struct Stack* stack)
@@ -73,22 +68,30 @@ void DeleteStack(struct Stack* stack)
   free(stack);
 }
 
-void PrintNode(struct Node* lower,
-                    int reverse)
+void PrintNode_r(struct Node* node,
+               int reverse)
 {
-  if (lower == NULL)
+  if (node == NULL)
     return;
 
   if (!reverse)
-    printf(" %d", lower->value);
+  {
+    printf(" ");
+    node->PrintValue(node);
+  }
+    //printf(" %d", *((int*) link->value));
 
-  PrintNode(lower->lower, reverse);
+  PrintNode_r(node->link, reverse);
 
   if (reverse)
-    printf("%d ", lower->value);
+  {
+    node->PrintValue(node);
+    printf(" ");
+  }
+    //printf("%d ", *((int*) link->value));
 }
 
-void PrintStack(struct Stack* stack,
+void RecursivePrintStack(struct Stack* stack,
                 int reverse)
 {
   if (IsEmptyStack(stack))
@@ -100,7 +103,7 @@ void PrintStack(struct Stack* stack,
   if (!reverse)
     printf("top ->");
 
-  PrintNode(stack->top, reverse);
+  PrintNode_r(stack->top, reverse);
 
   if (reverse)
     printf("<- top");

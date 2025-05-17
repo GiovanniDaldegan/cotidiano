@@ -1,35 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "linked_list_int.h"
+
 #define INDEX_OUT_OF_BOUNDS -1
 
-struct Node_Int32
+
+struct LinkedList* InitLinkedList()
 {
-  int data;
-  struct Node_Int32* next;
-};
-
-struct Node_Int32* InitNode_Int32(int data,
-                                  struct Node_Int32* next)
-{
-  struct Node_Int32* temp = malloc(sizeof(struct Node_Int32));
-
-  temp->data = data;
-  temp->next = next;
-
-  return temp;
-}
-
-
-struct LinkedList_Int32
-{
-  int size;
-  struct Node_Int32* head;
-};
-
-struct LinkedList_Int32* InitLinkedList_Int32()
-{
-  struct LinkedList_Int32* list = malloc(sizeof(struct LinkedList_Int32));
+  struct LinkedList *list = malloc(sizeof(struct LinkedList));
 
   list->size = 0;
   list->head = NULL;
@@ -37,90 +16,66 @@ struct LinkedList_Int32* InitLinkedList_Int32()
   return list;
 }
 
-struct Node_Int32* GetNodeAtLinkedList_Int32(struct LinkedList_Int32* list,
-                                 int index)
-{
-  if (index > list->size -1 || index < -list->size)
-    return NULL;
 
-  if (index == 0 || index == -list->size)
-  {
-    return list->head;
-  }
-  else
-  {
-    struct Node_Int32* temp = list->head;
-    int count = 0;
-
-    while (count != index-1 && count != list->size + index -1)
-    {
-      temp = temp->next;
-      count++;
-    }
-
-    return temp->next;
-  }
-}
-
-int InsertAtLinkedList_Int32(struct LinkedList_Int32* list,
-                             int data,
-                             int index) {
+int InsertAtLinkedList(struct LinkedList *list,
+                       int value,
+                       int index) {
   if (index > list->size + 1 || index < -list->size)
     return INDEX_OUT_OF_BOUNDS;
 
-  struct Node_Int32* newNode = InitNode_Int32(data, NULL);
+  struct Node *newNode = InitNode(INT, &value, NULL);
 
   if (index == 0 || list->size == 0)
   {
-    newNode->next = list->head;
+    newNode->link = list->head;
     list->head = newNode;
   }
   else
   {
-    struct Node_Int32* temp = list->head;
+    struct Node *temp = list->head;
     int count = 0;
 
     while (count != index -1 && count != list->size + index)
     {
-      temp = temp->next;
+      temp = temp->link;
       count++;
     }
 
-    newNode->next = temp->next;
-    temp->next = newNode;
+    newNode->link = temp->link;
+    temp->link = newNode;
   }
 
   list->size++;
   return 0;
 }
 
-int RemoveAtLinkedList_Int32(struct LinkedList_Int32* list,
-                             int index)
+int RemoveAtLinkedList(struct LinkedList *list,
+                       int index)
 {
   if (index > list->size -1 || index < -list->size)
     return INDEX_OUT_OF_BOUNDS;
 
-  struct Node_Int32* prt_free = NULL;
+  struct Node *prt_free = NULL;
 
   if (index == 0 || index == -list->size)
   {
     prt_free = list->head;
-    list->head = list->head->next;
+    list->head = list->head->link;
     free(prt_free);
   }
   else
   {
-    struct Node_Int32* temp = list->head;
+    struct Node *temp = list->head;
     int count = 0;
 
     while (count != index -1 && count != list->size + index -1)
     {
-      temp = temp->next;
+      temp = temp->link;
       count++;
     }
     
-    prt_free = temp->next;
-    temp->next = temp->next->next;
+    prt_free = temp->link;
+    temp->link = temp->link->link;
     free(prt_free);
   }
 
@@ -128,70 +83,102 @@ int RemoveAtLinkedList_Int32(struct LinkedList_Int32* list,
   return 0;
 }
 
-void PrintLinkedList_Int32(struct LinkedList_Int32* list)
-{
-  struct Node_Int32* temp = list->head;
 
-  printf("[");
+int IsEmptyLinkedList(struct LinkedList *list)
+{ return list->size == 0; }
+
+int IsInLinkedList(struct LinkedList *list,
+                   int value)
+{
+  struct Node *temp = list->head;
+
   while (temp != NULL)
   {
-    printf("%d", temp->data);
-    if (temp->next != NULL)
-      printf(", ");
-
-    temp = temp->next;
+    if (*((int*) temp->value) == value)
+      return 1;
+    temp = temp->link;
   }
-  printf("]");
+
+  return 0;
 }
 
-int IsEmptyLinkedList_Int32(struct LinkedList_Int32* list)
+
+void ClearLinkedList(struct LinkedList *list)
 {
-  return list->size == 0;
+  while (!IsEmptyLinkedList(list))
+    RemoveAtLinkedList(list, 0);
 }
 
-void ClearLinkedList(struct LinkedList_Int32* list)
-{
-  while (!IsEmptyLinkedList_Int32(list))
-    RemoveAtLinkedList_Int32(list, 0);
-}
-
-void DeleteLinkedList_Int32(struct LinkedList_Int32* list)
+void DeleteLinkedList(struct LinkedList *list)
 {
   ClearLinkedList(list);
   free(list);
 }
 
 
-void PrintNextLinkedList_Int32(struct Node_Int32* node,
-                               int reverse)
+void PrintValueAtLinkedList(struct LinkedList *list,
+                            int index)
+{
+  if (index > list->size -1 || index < -list->size)
+    return;
+
+  struct Node *temp = list->head;
+  int count = 0;
+  while (count != index && count != list->size + index)
+  {
+    temp = temp->link;
+    count++;
+  }
+
+  temp->PrintValue(temp);
+}
+
+void PrintLinkedList(struct LinkedList *list)
+{
+  struct Node *temp = list->head;
+
+  printf("[");
+  while (temp != NULL)
+  {
+    temp->PrintValue(temp);
+    if (temp->link != NULL)
+      printf(", ");
+
+    temp = temp->link;
+  }
+  printf("]");
+}
+
+void PrintRecursiveLinkedList_r(struct Node *node,
+                                int reverse)
 {
   if (node == NULL)
     return;
 
   if (!reverse)
   {
-    printf("%d", node->data);
-    if (node->next != NULL)
+    node->PrintValue(node);
+    if (node->link != NULL)
       printf(", ");
   }
 
-  PrintNextLinkedList_Int32(node->next, reverse);
-  
+  PrintRecursiveLinkedList_r(node->link, reverse);
+
   if (reverse)
   {
-    if (node->next != NULL)
+    if (node->link != NULL)
       printf(", ");
-    printf("%d", node->data);
+    node->PrintValue(node);
   }
 }
 
-void RecursivePrintLinkedList_Int32(struct LinkedList_Int32* list,
-                                    int reverse)
+void PrintRecursiveLinkedList(struct LinkedList *list,
+                              int reverse)
 {
-  struct Node_Int32* temp = list->head;
+  struct Node *temp = list->head;
 
   printf("[");
-  PrintNextLinkedList_Int32(temp, reverse);
+  PrintRecursiveLinkedList_r(temp, reverse);
   printf("]");
 }
 

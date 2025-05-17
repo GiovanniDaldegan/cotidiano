@@ -1,17 +1,17 @@
-#ifdef STACK_H
-#define STACK_H
+#ifndef STACK_INT_H
+#define STACK_INT_H
 
-typedef struct Node;
-typedef struct Stack;
+#include "node.c"
+
+struct Stack
+{
+  int size;
+  struct Node* top;
+};
 
 /*
-  Aloca espaço para um novo nó, atribui o valor e o ponteiro passados e
-  retrona seu endereço.
-*/
-struct Node* InitNode(int, struct Node*);
-/*
-  Aloca espaço para uma nova pilha, atribui seus valores iniciais e retorna
-  seu endereço.
+  Aloca espaço para uma nova pilha, inicializa-a e como vazia e retorna seu
+  endereço.
 */
 struct Stack* InitStack();
 
@@ -27,9 +27,14 @@ void Push(struct Stack*, int value);
 void Pop(struct Stack*);
 
 /*
-  Checa se a pilha está vazia.
+  Checa se a pilha está vazia (se size = 0).
 */
-void IsEmptyStack(struct Stack*);
+int IsEmptyStack(struct Stack*);
+/*
+  Checa se o valor está na pilha.
+  - chamadas: IsEmptyStack()
+ */
+int IsInStack(struct Stack*, int);
 
 /*
   Remove todos os nós da pilha a partir do topo.
@@ -43,14 +48,15 @@ void DeleteStack(struct Stack*);
 
 /*
   Imprime o valor do nó e chama PrintNode(lower) passando o ponteiro do nó
-  abaixo na pilha (reverse = 1 inverte essa ordem).
-  - chamadas: PrintNode()
+  abaixo na pilha (reverse = 1 inverte a ordem).
+  - chamadas: PrintNode_r()
 */
-void PrintNode(struct Node*, int);
+void PrintNode_r(struct Node*, int);
 /*
-  Imprime a sequência da pilha de cima pra baixo (reverse = 1 inverte a ordem).
+  Imprime a sequência da pilha de cima pra baixo no formato "top -> <top>
+  <top-1> ..." (reverse = 1 inverte a ordem).
+  - chamadas: PrintNode_r()
 */
 void PrintStack(struct Stack*, int);
-
 
 #endif

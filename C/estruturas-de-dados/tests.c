@@ -1,46 +1,48 @@
 #include <stdio.h>
-#include "linked_list_int.c"
 #include "stack_int.c"
+#include "linked_list_int.c"
 
 int TestLinkedList() {
-  struct LinkedList_Int32* list = InitLinkedList_Int32();
+  struct LinkedList* list = InitLinkedList();
 
-  InsertAtLinkedList_Int32(list, 2, 0);
-  InsertAtLinkedList_Int32(list, 4, 1);
-  InsertAtLinkedList_Int32(list, 1, 0);
-  InsertAtLinkedList_Int32(list, 3, -2);
-  InsertAtLinkedList_Int32(list, 0, 0);
-  InsertAtLinkedList_Int32(list, 3, -7);
-  InsertAtLinkedList_Int32(list, 3, 37);
-  InsertAtLinkedList_Int32(list, 5, -1);
-  InsertAtLinkedList_Int32(list, 6, -1);
+  InsertAtLinkedList(list, 2, 0);
+  InsertAtLinkedList(list, 4, 1);
+  InsertAtLinkedList(list, 1, 0);
+  InsertAtLinkedList(list, 3, -2);
+  InsertAtLinkedList(list, 0, 0);
+  InsertAtLinkedList(list, 3, -7);
+  InsertAtLinkedList(list, 3, 37);
+  InsertAtLinkedList(list, 5, -1);
+  InsertAtLinkedList(list, 6, -1);
 
-  RemoveAtLinkedList_Int32(list, -1);
-  RemoveAtLinkedList_Int32(list, -2);
-  RemoveAtLinkedList_Int32(list, -3);
-  RemoveAtLinkedList_Int32(list, -4);
-  RemoveAtLinkedList_Int32(list, -5);
+  RemoveAtLinkedList(list, -1);
+  RemoveAtLinkedList(list, -2);
+  RemoveAtLinkedList(list, -3);
+  RemoveAtLinkedList(list, -4);
+  RemoveAtLinkedList(list, -5);
 
-  printf("Linked list: \n");
-  PrintLinkedList_Int32(list);
+  printf("Lista encadeada:\n");
+  PrintLinkedList(list);
 
-  printf("\nValue at position -2: \n");
-  printf("%d", GetNodeAtLinkedList_Int32(list, -2)->data);
+  printf("\nValor na posição -2:\n");
+  PrintValueAtLinkedList(list, -2);
 
-  printf("\nLinked list recursive print: \n");
-  RecursivePrintLinkedList_Int32(list, 0);
+  printf("\nImpressão recursiva da lista encadeada:\n");
+  PrintRecursiveLinkedList(list, 0);
 
-  printf("\nLinked list recursive print (reverse):\n");
-  RecursivePrintLinkedList_Int32(list, 1);
+  printf("\nImpressão recursiva da lista encadeada:\n");
+  PrintRecursiveLinkedList(list, 1);
+
+  printf("\n3 está na lista encadeada:\n%d", IsInLinkedList(list, 3));
   
   ClearLinkedList(list);
-  printf("\nCleared list:\n");
-  PrintLinkedList_Int32(list);
+  printf("\nLista limpa:\n");
+  PrintLinkedList(list);
 
   printf("\n");
   
 
-  DeleteLinkedList_Int32(list);
+  DeleteLinkedList(list);
 
   return 0;
 }
@@ -53,16 +55,21 @@ int TestStack()
   Push(stack, 1);
   Push(stack, 2);
   Push(stack, 3);
-  PrintStack(stack, 0);
+  RecursivePrintStack(stack, 0);
 
   Pop(stack);
-  PrintStack(stack, 1);
+  RecursivePrintStack(stack, 1);
 
   Push(stack, 3);
-  PrintStack(stack, 1);
+  RecursivePrintStack(stack, 1);
+
+  printf("3 está na pilha? %d\n", IsInStack(stack, 3));
+  printf("6 está na pilha? %d\n", IsInStack(stack, 6));
 
   ClearStack(stack);
-  PrintStack(stack, 0);
+  RecursivePrintStack(stack, 0);
+
+  printf("3 está na pilha? %d\n", IsInStack(stack, 3));
 
   DeleteStack(stack);
 
@@ -71,7 +78,9 @@ int TestStack()
 
 int main()
 {
+  printf("> Testes da lista encadeada\n");
   TestLinkedList();
+  printf("\n> Testes da pilha\n");
   TestStack();
 }
 
