@@ -6,9 +6,9 @@
 #define INDEX_OUT_OF_BOUNDS -1
 
 
-struct LinkedList* InitLinkedList()
+LinkedList* InitLinkedList()
 {
-  struct LinkedList *list = malloc(sizeof(struct LinkedList));
+  LinkedList *list = malloc(sizeof(LinkedList));
 
   list->size = 0;
   list->head = NULL;
@@ -17,13 +17,13 @@ struct LinkedList* InitLinkedList()
 }
 
 
-int InsertAtLinkedList(struct LinkedList *list,
+int InsertAtLinkedList(LinkedList *list,
                        int value,
                        int index) {
   if (index > list->size + 1 || index < -list->size)
     return INDEX_OUT_OF_BOUNDS;
 
-  struct Node *newNode = InitNode(INT, &value, NULL);
+  Node *newNode = InitNode(INT, &value, NULL);
 
   if (index == 0 || list->size == 0)
   {
@@ -32,7 +32,7 @@ int InsertAtLinkedList(struct LinkedList *list,
   }
   else
   {
-    struct Node *temp = list->head;
+    Node *temp = list->head;
     int count = 0;
 
     while (count != index -1 && count != list->size + index)
@@ -49,13 +49,13 @@ int InsertAtLinkedList(struct LinkedList *list,
   return 0;
 }
 
-int RemoveAtLinkedList(struct LinkedList *list,
+int RemoveAtLinkedList(LinkedList *list,
                        int index)
 {
   if (index > list->size -1 || index < -list->size)
     return INDEX_OUT_OF_BOUNDS;
 
-  struct Node *prt_free = NULL;
+  Node *prt_free = NULL;
 
   if (index == 0 || index == -list->size)
   {
@@ -65,7 +65,7 @@ int RemoveAtLinkedList(struct LinkedList *list,
   }
   else
   {
-    struct Node *temp = list->head;
+    Node *temp = list->head;
     int count = 0;
 
     while (count != index -1 && count != list->size + index -1)
@@ -84,13 +84,13 @@ int RemoveAtLinkedList(struct LinkedList *list,
 }
 
 
-int IsEmptyLinkedList(struct LinkedList *list)
+int IsEmptyLinkedList(LinkedList *list)
 { return list->size == 0; }
 
-int IsInLinkedList(struct LinkedList *list,
+int IsInLinkedList(LinkedList *list,
                    int value)
 {
-  struct Node *temp = list->head;
+  Node *temp = list->head;
 
   while (temp != NULL)
   {
@@ -103,26 +103,26 @@ int IsInLinkedList(struct LinkedList *list,
 }
 
 
-void ClearLinkedList(struct LinkedList *list)
+void ClearLinkedList(LinkedList *list)
 {
   while (!IsEmptyLinkedList(list))
     RemoveAtLinkedList(list, 0);
 }
 
-void DeleteLinkedList(struct LinkedList *list)
+void DeleteLinkedList(LinkedList *list)
 {
   ClearLinkedList(list);
   free(list);
 }
 
 
-void PrintValueAtLinkedList(struct LinkedList *list,
+void PrintValueAtLinkedList(LinkedList *list,
                             int index)
 {
   if (index > list->size -1 || index < -list->size)
     return;
 
-  struct Node *temp = list->head;
+  Node *temp = list->head;
   int count = 0;
   while (count != index && count != list->size + index)
   {
@@ -133,9 +133,9 @@ void PrintValueAtLinkedList(struct LinkedList *list,
   temp->PrintValue(temp);
 }
 
-void PrintLinkedList(struct LinkedList *list)
+void PrintLinkedList(LinkedList *list)
 {
-  struct Node *temp = list->head;
+  Node *temp = list->head;
 
   printf("[");
   while (temp != NULL)
@@ -149,7 +149,7 @@ void PrintLinkedList(struct LinkedList *list)
   printf("]");
 }
 
-void PrintRecursiveLinkedList_r(struct Node *node,
+void PrintRecursiveLinkedList_r(Node *node,
                                 int reverse)
 {
   if (node == NULL)
@@ -172,10 +172,10 @@ void PrintRecursiveLinkedList_r(struct Node *node,
   }
 }
 
-void PrintRecursiveLinkedList(struct LinkedList *list,
+void PrintRecursiveLinkedList(LinkedList *list,
                               int reverse)
 {
-  struct Node *temp = list->head;
+  Node *temp = list->head;
 
   printf("[");
   PrintRecursiveLinkedList_r(temp, reverse);

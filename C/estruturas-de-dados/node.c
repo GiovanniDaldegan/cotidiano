@@ -1,12 +1,9 @@
-#ifndef NODE_C
-#define NODE_C
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "node.h"
 
 
-void* PrintValue(Node *self)
+static void* PrintValue(Node *self)
 {
   switch (self->type)
   {
@@ -20,11 +17,11 @@ void* PrintValue(Node *self)
   }
 }
 
-struct Node* InitNode(DataType type,
-                      void* value,
-                      struct Node* link)
+Node* InitNode(DataType type,
+               void* value,
+               Node* link)
 {
-  struct Node *node = malloc(sizeof(struct Node));
+  Node *node = malloc(sizeof(Node));
 
   switch (type)
   {
@@ -50,4 +47,3 @@ struct Node* InitNode(DataType type,
   return node;
 }
 
-#endif

@@ -4,9 +4,9 @@
 #include "stack_int.h"
 
 
-struct Stack* InitStack()
+Stack* InitStack()
 {
-  struct Stack* stack = malloc(sizeof(struct Stack));
+  Stack* stack = malloc(sizeof(Stack));
 
   stack->size = 0;
   stack->top = NULL;
@@ -15,18 +15,18 @@ struct Stack* InitStack()
 }
 
 
-void Push(struct Stack* stack,
+void Push(Stack* stack,
           int value)
 {
-  struct Node* newNode = InitNode(INT, &value, stack->top);
+  Node* newNode = InitNode(INT, &value, stack->top);
 
   stack->top = newNode;
   stack->size++;
 }
 
-void Pop(struct Stack* stack)
+void Pop(Stack* stack)
 {
-  struct Node* free_ptr = stack->top;
+  Node* free_ptr = stack->top;
 
   stack->top = stack->top->link;
   free(free_ptr);
@@ -34,16 +34,16 @@ void Pop(struct Stack* stack)
   stack->size--;
 }
 
-inline int IsEmptyStack(struct Stack* stack)
+int IsEmptyStack(Stack* stack)
 { return stack->size == 0; }
 
-int IsInStack(struct Stack* stack,
+int IsInStack(Stack* stack,
               int value)
 {
   if (IsEmptyStack(stack))
     return 0;
 
-  struct Node* temp = stack->top;
+  Node* temp = stack->top;
 
   while (temp != NULL)
   {
@@ -56,20 +56,20 @@ int IsInStack(struct Stack* stack,
   return 0;
 }
 
-void ClearStack(struct Stack* stack)
+void ClearStack(Stack* stack)
 {
   while (!IsEmptyStack(stack))
     Pop(stack);
 }
 
-void DeleteStack(struct Stack* stack)
+void DeleteStack(Stack* stack)
 {
   ClearStack(stack);
   free(stack);
 }
 
-void PrintNode_r(struct Node* node,
-               int reverse)
+void PrintNode_r(Node* node,
+                 int reverse)
 {
   if (node == NULL)
     return;
@@ -91,8 +91,8 @@ void PrintNode_r(struct Node* node,
     //printf("%d ", *((int*) link->value));
 }
 
-void RecursivePrintStack(struct Stack* stack,
-                int reverse)
+void RecursivePrintStack(Stack* stack,
+                         int reverse)
 {
   if (IsEmptyStack(stack))
   {

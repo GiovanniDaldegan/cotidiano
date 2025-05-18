@@ -1,20 +1,20 @@
 #ifndef LINKED_LIST_INT_H
 #define LINKED_LIST_INT_H
 
-#include "node.c"
+#include "node.h"
 
-struct LinkedList
+typedef struct LinkedList
 {
   int size;
-  struct Node *head;
-};
+  Node *head;
+} LinkedList;
 
 
 /*
   Aloca memória para uma nova lista encadeada, inicializa-a como vazia e retorna
   seu endereço.
 */
-struct LinkedList *InitLinkedList();
+LinkedList *InitLinkedList();
 
 /*
   Aloca memória para um novo nó, atribui a ele o valor passado e o insere na
@@ -24,19 +24,19 @@ struct LinkedList *InitLinkedList();
     -1 se o índice estiver fora do limite;
      0 se a inserção ocorrer;
 */
-int InsertAtLinkedList(struct LinkedList*, int, int);
+int InsertAtLinkedList(LinkedList*, int, int);
 /*
   Remove o nó da lista e libera sua memória.
   - retorna:
      0 se a remoção ocorrer;
     -1 se o índice estiver fora do limite.
 */
-int RemoveAtLinkedList(struct LinkedList*, int);
+int RemoveAtLinkedList(LinkedList*, int);
 
 /*
   Checa se a lista está vazia (se size = 0).
 */
-int IsEmptyLinkedList(struct LinkedList*);
+int IsEmptyLinkedList(LinkedList*);
 /*
   Percorre a lista iterativamente e checa se o valor está presente nela.
   - retorna:
@@ -44,35 +44,29 @@ int IsEmptyLinkedList(struct LinkedList*);
      0 se a lista não estiver vazia;
      1 se a lista estiver vazia.
 */
-int IsInLinkedList(struct LinkedList*, int);
+int IsInLinkedList(LinkedList*, int);
 
 /*
   Limpa a lista iterativamente a partir do início, liberando a memória de cada
   nó.
   - chamadas: RemoveAt()
 */
-void ClearLinkedList(struct LinkedList*);
+void ClearLinkedList(LinkedList*);
 /*
   Limpa a lista e libera sua memória.
   - chamadas: ClearLinkedList()
 */
-void DeleteLinkedList(struct LinkedList*);
+void DeleteLinkedList(LinkedList*);
 
 /*
   Percorre a lista iterativamente e imprime seus valores no formato [<valor0>,
   <valor1>, ...].
 */
-void PrintLinkedList(struct LinkedList*);
-/*
-  Percorre recursivamente a lista a partir do nó especificado e imprime os
-  valores no formato <valor0>, <valor1>, ... (reverse inverte a ordem).
-  - chamadas: PrintFromNodeLinkedList()
-*/
-void PrintFromNodeLinkedList(struct LinkedList*);
+void PrintLinkedList(LinkedList*);
 /*
   Imprime a lista recursivamente.
   - chamadas: PrintFromNodeLinkedList()
 */
-void RecursivePrintLinkedList(struct LinkedList*, int);
+void RecursivePrintLinkedList(LinkedList*, int);
 
 #endif

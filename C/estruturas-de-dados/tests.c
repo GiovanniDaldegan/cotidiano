@@ -1,9 +1,11 @@
 #include <stdio.h>
+
+#include "node.c"
 #include "stack_int.c"
 #include "linked_list_int.c"
 
 int TestLinkedList() {
-  struct LinkedList* list = InitLinkedList();
+  LinkedList* list = InitLinkedList();
 
   InsertAtLinkedList(list, 2, 0);
   InsertAtLinkedList(list, 4, 1);
@@ -49,7 +51,7 @@ int TestLinkedList() {
 
 int TestStack()
 {
-  struct Stack* stack = InitStack();
+  Stack* stack = InitStack();
 
   Push(stack, 0);
   Push(stack, 1);
