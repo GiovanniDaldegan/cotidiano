@@ -5,18 +5,19 @@
 #include "estruturas-de-dados/node.c"
 #include "estruturas-de-dados/stack_int.c"
 #include "estruturas-de-dados/linked_list_int.c"
+#include "algebric_interpreter.h"
 
 #define INVALID_VALUE       1
 #define INVALID_EXPRESSION  2
 
 
-inline int IsNumeric(char c)
+int IsNumeric(char c)
 { return c >= 48 && c <= 57; }
 
-inline int IsOperator(LinkedList* operators, char name)
+int IsOperator(LinkedList* operators, char name)
 { return IsInLinkedList(operators, name); }
 
-inline int IsVariable(LinkedList* variables, char name)
+int IsVariable(LinkedList* variables, char name)
 { return IsInLinkedList(variables, name); }
 
 int IsBlockSymbol(char symbol)
@@ -43,11 +44,6 @@ int InfixExpressionValue(char* expression)
   }
 }
 
-int AddToBlockStack(Stack* blockStack,
-                    char blockStart)
-{
-}
-
 
 int CreateOperator(char name,
                    char* operation)
@@ -70,83 +66,109 @@ int CreateVariable(LinkedList* variables,
 
 
 void ClearConsole()
-{ printf("\e[1;1H\e[2J"); }
+{} //printf("\e[1;1H\e[2J"); }
 
-// NOTE: adicionar limite de caracteres por linha
+// TODO: adicionar suporte para caracteres não ASCII no título
+int PrintHeader(char* title,
+                char* description,
+                char* symbols,
+                int padding,
+                int lines)
+{
+  int title_size = strlen(title);
+  int header_size = title_size + 2 + 2 * padding;
+
+  char header_line[header_size+1];
+  
+  // formatação das linhas superior e inferior
+  for (int i = 0; i < header_size+1; i++)
+      header_line[i] = symbols[0];
+  header_line[header_size] = '\0';
+
+  printf("%s\n", header_line); // linha superior
+  for (int i = 0; i < header_size; i++)
+  {
+    if (i % (header_size-1) == 0) // bordas
+      printf("%c", symbols[1]);
+    else if  (i <= padding || i >= padding + title_size +1) // padding
+      printf(" ");
+    else
+      printf("%c", title[i-padding-1]); // título
+  }
+  printf("\n%s\n", header_line); // linha inferior
+}
+
+int PrintOptions(char** options)
+{
+  int count = 0;
+  while (options[count] != NULL)
+  {
+    printf(" %d - %s\n", count, options[count]);
+    count++;
+  }
+}
+
+// TODO: adicionar limite de caracteres por linha
 void PrintMenu(char* title,
-               char* symbols,
                char* description,
                char** options,
+               char* symbols,
                int padding,
                int lines)
 {
-  ClearConsole();
-
-  int title_size = strlen(title) -1;
-  int header_size = title_size + 2 + 2 * padding;
-
-  char header_line[header_size];
-  char title_line[header_size];
-  
-  for (int i = 0; i < header_size; i++)
-      header_line[i] = symbols[0];      // strlen() > header_size??
-                                        // 4 ou 5 caracteres inválidos a mais??
-
-  for (int i = 0; i < 2+2*padding; i++)     // eu <3 overkilling
-  {          // começo/fim     pulo do título    preencher entre título e borda
-    int index = (i > padding) * (title_size + 1 + padding) + (i % (padding +1));
-
-    if (i % (2 * padding +1) == 0)      // os índices depois do título tão com
-                                        // um offset -1
-    {
-      title_line[index] = symbols[1];
-    }
-    else
-      title_line[index] = ' ';
-  }
-
-  memcpy(&title_line[padding+1], title, title_size +1);
-
-  printf("%s\n", header_line);
-  printf("%s\n", title_line);
-  printf("%s\n", header_line);
+  PrintHeader(title, description, symbols, padding, lines);
+  PrintOptions(options);
 }
 
-int PrintHeader(char* title, char* description)
-{}
 
-int PrintOptions(char** options)
-{}
+int GetChoice()
+{
+  char input[3];
 
+  fgets(input, sizeof(input), stdin);
+
+  // TODO: corrigir a checagem pro buffer de fato ser limpo
+  if (strlen(input) > sizeof(input) - 1)
+  {
+    int ch;
+    while ((ch = getchar()) != EOF && ch != '\n'); // descarta tudo no buffer até
+                                                   // o próximo \n
+  }
+
+  printf("%s %ld", input, strlen(input));
+
+  if (strlen(input) == 1 && IsNumeric(input[0]))
+    return input[0] - '0';
+  else
+    return -1;
+}
+
+// TODO: função de seleção de opção? (com while e switch)
 
 void MenuVariables(LinkedList* variables)
 {
-  int option = -1;
-
-  char* title = "Menu de variáveis";
+  char* title = "Menu de variaveis";
   char* symbols = "=|";
-  char* options[] = { "Retornar", "Adicionar variável" };
+  char* options[] = { "Retornar", "Adicionar variável", NULL };
 
-  while (option != 0)
+  int choice = -1;
+  while (choice != 0)
   {
     ClearConsole();
-    /*
-    printf("=======================\n"
-           "|  Menu de variáveis  |\n"
-           "=======================\n");
-    printf("Escolha uma opção:\n"
-           " 0 - Retornar\n"
-           " 1 - Adicionar variável\n"
-           "\n");
-    */
-    PrintMenu(title, symbols, NULL, options, 3, 1);
+    PrintMenu(title, NULL, options, symbols, 4, 1);
+    
+    choice = GetChoice();
 
-    scanf("%d", &option);
+    switch(choice)
+    {
+      default:
+        printf("\nOpção inválida.\n");
+        break;
+    }
   }
 
 
 }
-
 
 void MenuOperators(LinkedList* operators)
 {
@@ -154,29 +176,25 @@ void MenuOperators(LinkedList* operators)
 }
 
 
-int main()
+void MainMenu()
 {
   LinkedList* operators = InitLinkedList();
   LinkedList* variables = InitLinkedList();
 
-  int option = -1;
-  
-  while (option != 0)
+  char* title = "Interpretador Algebrico";
+  char* symbols = "=|";
+  char* options[] = {"Terminar o programa", "Menu de variáveis",
+                     "Menu de Operadores", "Inserir expressão", NULL};
+
+  int choice = -1;
+  while (choice != 0)
   {
     ClearConsole();
+    PrintMenu(title, NULL, options, symbols, 3, 1);
 
-    printf("\n=============================\n"
-             "|  Interpretador Algébrico  |\n"
-             "=============================\n");
-    printf("\nEscolha uma opção:\n"
-             " 0 - Terminar o programa\n"
-             " 1 - Gerenciar variáveis\n"
-             " 2 - Gerenciar operadores\n"
-             " 3 - Inserir expressão\n");
-
-    scanf("%d", &option);
-
-    switch (option)
+    choice = GetChoice();
+    
+    switch (choice)
     {
       case 1:
         MenuVariables(variables);
@@ -186,12 +204,17 @@ int main()
         MenuOperators(operators);
         break;
 
-      case 3:
+      default:
+        printf("\nOpção inválida.\n");
         break;
     }
   }
+  ClearConsole();
+}
 
-  printf("\e[1;1H\e[2J");
 
+int main()
+{
+  MainMenu();
   return 0;
 }
