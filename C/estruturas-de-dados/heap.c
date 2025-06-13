@@ -14,6 +14,14 @@ Heap* InitHeap(int size)
   return h;
 }
 
+/*
+int IsHeap(int* index, int elementsLeft)
+{
+  if (elementsLeft == 0)
+    return;
+}
+*/
+
 void HeapifyUp(Heap *heap, int index)
 {
   if (index > heap->size -1 || index < 1)
@@ -47,34 +55,81 @@ void HeapifyDown(Heap *heap, int index)
 
     i_child++;
   }
-  
-  int child = heap->array[i_child];
-  heap->array[i_child] = heap->array[index];
-  heap->array[index] = child;
+  else
+  {
+    int child = heap->array[i_child];
+    heap->array[i_child] = heap->array[index];
+    heap->array[index] = child;
 
-  printf("Troca elemento #%d (%d) com #%d (%d)\n",
-         index + 1, heap->array[i_child], i_child + 1, child);
+    printf("Troca elemento #%d (%d) com #%d (%d)\n",
+           index + 1, heap->array[i_child], i_child + 1, child);
+ }
 
   HeapifyDown(heap, i_child);
 }
 
-int main ()
+void Heapify_r(Heap *heap, int index)
 {
-  Heap *heap = InitHeap(10);
+  for (int i = 0; i < (index+1) / 2; i++)
+    printf(" ");
+  printf("index: %d\n", index);
+  int i_child = index *2 +1;
 
-  for (int i = 0; i < 10; i++)
-    heap->array[i] = 11 - i;
+  if (heap->size <= 1 || index < 0 || index > heap->size -1) {
+    return;
+  }
 
-  //HeapifyUp(heap, 1);
-  //printf("Heapify up:\n");
-  //HeapifyUp(heap, 9);
-  printf("Heapify down:\n");
-  HeapifyDown(heap, 1);
+  HeapifyUp(heap, index);
 
-  printf("heap:\n");
+  Heapify_r(heap, i_child);
+  if (i_child +1 <= heap->size -1)
+    Heapify_r(heap, i_child +1);
+
+}
+
+void Heapify(Heap *heap)
+{
+  printf("heap com %d elementos, com profundidade floor(log(%d))\n", heap->size, heap->size);
+  Heapify_r(heap, 0);
+  /*
+  while (heap->array[0] > heap->array[1] ||
+         heap->array[0] > heap->array[2])
+    HeapifyDown(heap, 0);
+  */
+}
+
+void HeapPrintArray(Heap *heap, int reverse)
+{
+  printf("heap");
+  if (reverse)
+    printf(" (invertida)");
+  else
+    reverse = -1;
+  printf(": ");
+  
   for (int i = 0; i < heap->size; i++)
     printf("%d ", heap->array[i]);
+    //printf("%d ", heap->array[heap->size * reverse + (-reverse) * i]);
   printf("\n");
+}
+
+int main ()
+{
+  Heap *heap = InitHeap(11);
+
+  for (int i = 0; i < 11; i++)
+    heap->array[i] = 11 - i;
+
+  /*
+  printf("Heapify up:\n");
+  HeapifyUp(heap, 9);
+
+  printf("Heapify down:\n");
+  HeapifyDown(heap, 1);
+  */
+
+  Heapify(heap);
+  HeapPrintArray(heap, 0);
 
   return 0;
 }

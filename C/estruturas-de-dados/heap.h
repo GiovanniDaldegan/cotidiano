@@ -10,22 +10,27 @@ typedef struct Heap
   int  *array;
 } Heap;
 
-Heap* InitHeap(int);
+Heap* InitHeap(int size);
 
-void HeapifyDown(Heap*, int);
-void HeapifyUp(Heap*, int);
-void Heapify(Heap*);
+int IsHeap(int* heapArray);
 
-void HeapInsert(Heap*, int);
+void HeapifyDown(Heap* heap, int index);
+void HeapifyUp(Heap* heap, int index);
+void Heapify_r(Heap* heap, int index);
+void Heapify(Heap* heap);
 
-void HeapDeleteElem(Heap*, int);
-void HeapExtractMin(Heap*);
+void HeapInsert(Heap* heap, int key);
+
+void HeapDeleteElem(Heap* heap, int key);
+void HeapExtractMin(Heap* heap);
 
 /*
  * Imprime árvore que representa a heap passada, de forma recursiva. Primeiro
  * calcula os espaços necessários e depois imprime a árvore a partir da raíz
  * (reverse=1 faz imprimir primeiro as folhas).
  */
-void HeapPrintTree(Heap*, int reverse);
+void HeapPrintTree(Heap* heap, int reverse);
+void HeapPrintArray(Heap* heap, int reverse);
+void HeapPrintDetails(Heap* heap);
 
 #endif
