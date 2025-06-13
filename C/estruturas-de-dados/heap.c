@@ -16,7 +16,7 @@ Heap* InitHeap(int size)
 
 void HeapifyUp(Heap *heap, int index)
 {
-  if (index > heap->size || index < 1)
+  if (index > heap->size -1 || index < 1)
     return;
 
   int i_parent = (index - 1) / 2;
@@ -28,18 +28,35 @@ void HeapifyUp(Heap *heap, int index)
 
     printf("Troca elemento #%d (%d) com #%d (%d)\n",
            i_parent + 1, parent, index + 1, heap->array[i_parent]);
-
-    int i_parent_parent = (i_parent - 1) / 2;
-    if (i_parent != 0 &&
-        heap->array[i_parent_parent] > heap->array[(i_parent)])
-    {
-      HeapifyUp(heap, i_parent);
-    }
   }
+
+  HeapifyUp(heap, i_parent);
 }
 
-void HeapifyDown()
-{}
+void HeapifyDown(Heap *heap, int index)
+{
+  int i_child = index *2 +1;
+
+  if (i_child > heap->size -1)
+    return;
+
+  if (!(heap->array[index] > heap->array[i_child]))
+  {
+    if (!(heap->array[index] > heap->array[i_child +1]))
+      return; 
+
+    i_child++;
+  }
+  
+  int child = heap->array[i_child];
+  heap->array[i_child] = heap->array[index];
+  heap->array[index] = child;
+
+  printf("Troca elemento #%d (%d) com #%d (%d)\n",
+         index + 1, heap->array[i_child], i_child + 1, child);
+
+  HeapifyDown(heap, i_child);
+}
 
 int main ()
 {
@@ -49,7 +66,15 @@ int main ()
     heap->array[i] = 11 - i;
 
   //HeapifyUp(heap, 1);
-  HeapifyUp(heap, 9);
+  //printf("Heapify up:\n");
+  //HeapifyUp(heap, 9);
+  printf("Heapify down:\n");
+  HeapifyDown(heap, 1);
+
+  printf("heap:\n");
+  for (int i = 0; i < heap->size; i++)
+    printf("%d ", heap->array[i]);
+  printf("\n");
 
   return 0;
 }
