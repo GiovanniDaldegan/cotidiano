@@ -7,7 +7,7 @@
  *  árvore binária balanceada na qual o valor de um nó sempre é menor que o
  *  valor de seus nós filhos.
  *
- *  Nessa implementação, a heap é representada por um array iniciado em 0, em
+ *  Nessa implementação, a heap é representada por um vetor iniciado em 0, em
  *  que o índice do pai de um nó de índice i é dado por (i - 1) / 2, e o índice
  *  de seus filhos são 2 * i + 1 e 2 * i + 2, respectivamente.
  */
@@ -23,25 +23,32 @@ typedef struct Heap
 
 Heap* InitHeap(int size);
 
-int IsHeap(int* heapArray);
+
+/*
+ * Percorre um vetor iterativamente contando quantos nós tem valor maior que
+ * seu nó pai e retorna o resultado da contagem. Se retornar 0, o vetor é uma
+ * heap; se retornar um inteiro maior que 0, este inteiro representa o número
+ * de nós que violam as regras da heap.
+ */
+int HeapMisplacedKeys(int* heapArray, int size);
 
 /*
  * Propaga o valor do índice passado na direção da raiz recursivamente, até que
- * ocupe o lugar correto no array. Se o array for quase uma heap, a menos que o
+ * ocupe o lugar correto no vetor. Se o vetor for quase uma heap, a menos que o
  * valor do índice passado seja pequeno demais para sua posição, o resultado
  * final é uma heap.
  */
 void HeapifyUp(Heap* heap, int index);
 /*
  * Propaga o valor do índice passado na direção das folhas recursivamente, até
- * que  * ocupe o lugar correto no array. Se o array for quase uma heap, a
+ * que  * ocupe o lugar correto no vetor. Se o vetor for quase uma heap, a
  * menos que o valor do índice passado seja grande demais para sua posição, o
  * resultado final é uma heap.
  */
 void HeapifyDown(Heap* heap, int index);
 
 /*
- * Ordena o array a partir do índice passado para que cumpra os requisitos de
+ * Ordena o vetor a partir do índice passado para que cumpra os requisitos de
  * uma heap ao chamar HeapifyUp no índice passado e agir recursivamente nos
  * índices dos nós filhos do nó do índice passado.
  */
@@ -57,19 +64,19 @@ void HeapDeleteElem(Heap* heap, int key);
 void HeapExtractMin(Heap* heap);
 
 /*
+ * Imprime detalhes da heap, como o número total de elementos e a profundidade
+ * da árvore que ela representa.
+ */
+void HeapPrintDetails(Heap* heap);
+/*
  * Imprime árvore que representa a heap passada, de forma recursiva. Primeiro
  * calcula os espaços necessários e depois imprime a árvore a partir da raíz
  * (reverse=1 faz imprimir primeiro as folhas).
  */
 void HeapPrintTree(Heap* heap, int reverse);
 /*
- * Imprime o array da heap de forma iterativa.
+ * Imprime o vetor da heap de forma iterativa.
  */
 void HeapPrintArray(Heap* heap, int reverse);
-/*
- * Imprime detalhes da heap, como o número total de elementos e a profundidade
- * da árvore que ela representa.
- */
-void HeapPrintDetails(Heap* heap);
 
 #endif
