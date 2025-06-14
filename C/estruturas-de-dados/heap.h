@@ -19,6 +19,7 @@ typedef struct Heap
 {
   int  size;
   int  *array;
+  // TODO: int* Positions  ()
 } Heap;
 
 Heap* InitHeap(int size);
@@ -60,8 +61,8 @@ void Heapify(Heap* heap);
 
 void HeapInsert(Heap* heap, int key);
 
-void HeapDeleteElem(Heap* heap, int key);
-void HeapExtractMin(Heap* heap);
+int HeapRemoveKeyAt(Heap* heap, int key);
+int HeapExtractMin(Heap* heap);
 
 /*
  * Imprime detalhes da heap, como o número total de elementos e a profundidade

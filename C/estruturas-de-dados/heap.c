@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "./heap.h"
 
@@ -20,12 +21,8 @@ int HeapMisplacedKeys(int* array, int size)
   for (int i = 0; i < size; i++)
   {
     if (array[(i -1) /2] > array[i])
-    {
-      printf("%d ",i);
       misplacedKeys++;
-    }
   }
-  printf("\n");
 
   return misplacedKeys;
 }
@@ -83,22 +80,48 @@ void Heapify_r(Heap *heap, int index)
     Heapify_r(heap, i_child +1);
 }
 
+// TODO: trocar argumento pra int*
 void Heapify(Heap *heap)
 {
   Heapify_r(heap, 0);
 }
 
-
+// TODO: evitar memcpy
 void HeapInsert(Heap *heap, int key)
 {
+  int* newArray = calloc(heap->size +1, sizeof(int));
+  memcpy(newArray, heap->array, heap->size * sizeof(int));
+  
+  newArray[heap->size] = key;
 
+  free(heap->array);
+  heap->array = newArray;
+  heap->size++;
+
+  HeapifyUp(heap, heap->size -1);
+}
+
+// TODO: evitar mudar a estrutura da árvore, evitar memcpy
+int HeapRemoveKeyAt(Heap *heap, int index)
+{
+  int* newArray = calloc(heap->size -1, sizeof(int));
+  memcpy(newArray, heap->array, index * sizeof(int));
+  memcpy(newArray +index, heap->array +index +1,
+         (heap->size -index -1) * sizeof(int));
+
+  int elem = heap->array[index];
+  
+  free(heap->array);
+  heap->array = newArray;
+  heap->size--;
+
+  Heapify_r(heap, index);
+
+  return elem;
 }
 
 /*
-void DeleteElem(Heap *heap, int index)
-{}
-
-int ExtractMin(Heap *heap, int index)
+int HeapExtractMin(Heap *heap, int index)
 */
 
 void HeapPrintDetails(Heap* heap)
@@ -106,10 +129,10 @@ void HeapPrintDetails(Heap* heap)
   int misplacedKeys = HeapMisplacedKeys(heap->array, heap->size);
   if (misplacedKeys > 0)
   {
-    printf("O vetor não representa uma heap. Há %d valores que violam a ordem "
-           "de uma heap.\n", misplacedKeys);
+    printf("O vetor não representa uma heap. Há %d valor(es) violando a ordem "
+           "de heap.\n", misplacedKeys);
   }
-  printf("Vetor com %d elementos, representando uma árvore com profundidade"
+  printf("Vetor com %d elementos, representando uma árvore com profundidade "
          "floor(log(%d))\n", heap->size, heap->size);
 }
 
@@ -147,8 +170,15 @@ int main ()
   Heapify(heap);
 
   HeapPrintArray(heap, 0);
+  HeapPrintDetails(heap);
   printf("\n");
 
+  HeapInsert(heap, 0);
+  HeapPrintArray(heap, 0);
+  HeapPrintDetails(heap);
+
+  printf("%d\n", HeapRemoveKeyAt(heap, 1));
+  HeapPrintArray(heap, 0);
   HeapPrintDetails(heap);
 
   return 0;
