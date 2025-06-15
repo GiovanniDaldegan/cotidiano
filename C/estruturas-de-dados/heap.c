@@ -80,74 +80,97 @@ void Heapify_r(Heap *heap, int index)
     Heapify_r(heap, i_child +1);
 }
 
-// TODO: trocar argumento pra int*
 void Heapify(Heap *heap)
 {
   Heapify_r(heap, 0);
 }
 
-// TODO: evitar memcpy
+
 void HeapInsert(Heap *heap, int key)
 {
-  int* newArray = calloc(heap->size +1, sizeof(int));
-  memcpy(newArray, heap->array, heap->size * sizeof(int));
-  
-  newArray[heap->size] = key;
+  // NOTE: realloc tem uma chance de falha quando lidando com concorrência?
+  heap->array = realloc(heap->array, (heap->size +1) * sizeof(int));
 
-  free(heap->array);
-  heap->array = newArray;
+  heap->array[heap->size] = key;
   heap->size++;
 
   HeapifyUp(heap, heap->size -1);
 }
 
-// TODO: evitar mudar a estrutura da árvore, evitar memcpy
-int HeapRemoveKeyAt(Heap *heap, int index)
+void HeapPullUp(Heap* heap, int index)
 {
-  int* newArray = calloc(heap->size -1, sizeof(int));
-  memcpy(newArray, heap->array, index * sizeof(int));
-  memcpy(newArray +index, heap->array +index +1,
-         (heap->size -index -1) * sizeof(int));
+  int i_child = index * 2 +1;
 
-  int elem = heap->array[index];
-  
-  free(heap->array);
-  heap->array = newArray;
-  heap->size--;
+  if (i_child > heap->size -1)
+  {
+    // se o nó não tiver filhos, puxar os próximos elementos do array
+    if (index < heap->size -1)  
+    {
+      heap->array[index] = heap->array[index +1];
+      HeapifyUp(heap, index);
 
-  Heapify_r(heap, index);
+      HeapPullUp(heap, index +1);
+    }
+    return;
+  }
 
-  return elem;
+  if (i_child +1 > heap->size -1 ||
+      heap->array[i_child] < heap->array[i_child +1])
+  {
+    heap->array[index] = heap->array[i_child];
+    HeapPullUp(heap, i_child);
+  }
+  else
+  {
+    heap->array[index] = heap->array[i_child +1];
+    HeapPullUp(heap, i_child +1);
+  }
 }
 
-/*
-int HeapExtractMin(Heap *heap, int index)
-*/
+int HeapExtractKeyAt(Heap *heap, int index)
+{
+  int key = heap->array[index];
+  HeapPullUp(heap, index);
+
+  heap->size--;
+  heap->array = realloc(heap->array, heap->size * sizeof(int));
+
+  return key;
+}
+
+int HeapExtractMin(Heap *heap)
+{
+  return HeapExtractKeyAt(heap, 0);
+}
 
 void HeapPrintDetails(Heap* heap)
 {
   int misplacedKeys = HeapMisplacedKeys(heap->array, heap->size);
   if (misplacedKeys > 0)
   {
-    printf("O vetor não representa uma heap. Há %d valor(es) violando a ordem "
-           "de heap.\n", misplacedKeys);
+    printf("\nO vetor não representa uma heap. Há %d valor(es) violando a "
+           "ordem de heap.", misplacedKeys);
   }
-  printf("Vetor com %d elementos, representando uma árvore com profundidade "
-         "floor(log(%d))\n", heap->size, heap->size);
+  printf("\nVetor com %d elementos, representando uma árvore com profundidade "
+         "floor(log(%d))", heap->size, heap->size);
 }
 
 void HeapPrintArray(Heap *heap, int reverse)
 {
-  printf("Heap");
+  printf("\nHeap");
   if (reverse)
     printf(" (invertida)");
   else
     reverse = -1;
-  printf(": ");
+  printf(": [");
 
   for (int i = 0; i < heap->size; i++)
-    printf("%d ", heap->array[i]);
-  printf("\n");
+  {
+    printf("%d", heap->array[i]);
+    if (i != heap->size -1)
+      printf(" ");
+  }
+  printf("]");
 }
 
 
@@ -159,27 +182,33 @@ int main ()
   for (int i = 0; i < size; i++)
     heap->array[i] = size - i;
 
-  heap->array[0] = 0;
 
   HeapPrintArray(heap, 0);
-  printf("\n");
 
   HeapPrintDetails(heap);
-  printf("\n");
 
   Heapify(heap);
 
+  printf("\n\nHeap ordenada.\n");
   HeapPrintArray(heap, 0);
   HeapPrintDetails(heap);
-  printf("\n");
 
+  printf("\n\nInserido 1 na heap.");
+  HeapInsert(heap, 1);
+  printf("\nInserido 0 na heap.");
   HeapInsert(heap, 0);
+  printf("\nInserido 2 na heap.\n");
+  HeapInsert(heap, 2);
   HeapPrintArray(heap, 0);
   HeapPrintDetails(heap);
 
-  printf("%d\n", HeapRemoveKeyAt(heap, 1));
+  printf("\n\nRemovido #3 (%d)\n", HeapExtractKeyAt(heap, 2));
+  printf("Removido #2 (%d)\n", HeapExtractKeyAt(heap, 1));
+  printf("Removido #1 (%d)\n", HeapExtractKeyAt(heap, 0));
   HeapPrintArray(heap, 0);
   HeapPrintDetails(heap);
+
+  printf("\n");
 
   return 0;
 }

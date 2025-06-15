@@ -31,7 +31,7 @@ Heap* InitHeap(int size);
  * heap; se retornar um inteiro maior que 0, este inteiro representa o número
  * de nós que violam as regras da heap.
  */
-int HeapMisplacedKeys(int* heapArray, int size);
+int HeapMisplacedKeys(int *heapArray, int size);
 
 /*
  * Propaga o valor do índice passado na direção da raiz recursivamente, até que
@@ -39,45 +39,72 @@ int HeapMisplacedKeys(int* heapArray, int size);
  * valor do índice passado seja pequeno demais para sua posição, o resultado
  * final é uma heap.
  */
-void HeapifyUp(Heap* heap, int index);
+void HeapifyUp(Heap *heap, int index);
 /*
  * Propaga o valor do índice passado na direção das folhas recursivamente, até
  * que  * ocupe o lugar correto no vetor. Se o vetor for quase uma heap, a
  * menos que o valor do índice passado seja grande demais para sua posição, o
  * resultado final é uma heap.
  */
-void HeapifyDown(Heap* heap, int index);
+void HeapifyDown(Heap *heap, int index);
 
 /*
  * Ordena o vetor a partir do índice passado para que cumpra os requisitos de
  * uma heap ao chamar HeapifyUp no índice passado e agir recursivamente nos
  * índices dos nós filhos do nó do índice passado.
  */
-void Heapify_r(Heap* heap, int index);
+void Heapify_r(Heap *heap, int index);
 /*
  * Chama Heapify_r, passando o índice 0 (ordena toda a heap).
  */
-void Heapify(Heap* heap);
+void Heapify(Heap *heap);
 
-void HeapInsert(Heap* heap, int key);
+/*
+ * Insere um valor na heap.
+ * Primeiro, insere ele na última posição e chama HeapifyUp passando o índice
+ * desse valor para garantir a ordem da heap.
+ */
+void HeapInsert(Heap *heap, int key);
 
-int HeapRemoveKeyAt(Heap* heap, int key);
-int HeapExtractMin(Heap* heap);
+/*
+ * É chamada quando há um espaço considerado vazio na heap, cujo índice é
+ * passado à função para que seja preenchido.
+ * A função puxa o nó filho de menor valor para ocupar o dado índice; se não
+ * houver nó filho, puxa o próximo elemento do vetor da heap para mantê-la
+ * balanceada.
+ * Sempre que puxa um nó, chama HeapifyUp passando seu índice para garantir a
+ * ordem da heap e, então, HeapPullUp passando seu índice, propagando
+ * recursivamente a atualização da heap.
+ */
+void HeapPullUp(Heap *heap, int index);
+
+/*
+ * Extrai o valor da heap no índice passado.
+ * Chama HeapPullUp no índice passado e retorna o valor que ocupava esse
+ * índice.
+ */
+int HeapExtractKeyAt(Heap *heap, int index);
+
+/*
+ * Extrai o valor mínimo da heap.
+ * Chama HeapPullUp passando o índice 0.
+ */
+int HeapExtractMin(Heap *heap);
 
 /*
  * Imprime detalhes da heap, como o número total de elementos e a profundidade
  * da árvore que ela representa.
  */
-void HeapPrintDetails(Heap* heap);
+void HeapPrintDetails(Heap *heap);
 /*
  * Imprime árvore que representa a heap passada, de forma recursiva. Primeiro
  * calcula os espaços necessários e depois imprime a árvore a partir da raíz
  * (reverse=1 faz imprimir primeiro as folhas).
  */
-void HeapPrintTree(Heap* heap, int reverse);
+void HeapPrintTree(Heap *heap, int reverse);
 /*
  * Imprime o vetor da heap de forma iterativa.
  */
-void HeapPrintArray(Heap* heap, int reverse);
+void HeapPrintArray(Heap *heap, int reverse);
 
 #endif
