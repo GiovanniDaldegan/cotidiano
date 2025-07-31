@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include "./heap.h"
 
@@ -13,6 +14,14 @@ Heap* InitHeap(int size)
   h->array = calloc(size, sizeof(int));
 
   return h;
+}
+
+int HeapSize(Heap *heap) {
+  return heap->size;
+}
+
+int HeapDepth(Heap *heap) {
+  return (int) (log(heap->size) / log(2));
 }
 
 int HeapMisplacedKeys(int* array, int size)
@@ -152,7 +161,7 @@ void HeapPrintDetails(Heap* heap)
            "ordem de heap.", misplacedKeys);
   }
   printf("\nVetor com %d elementos, representando uma árvore com profundidade "
-         "floor(log(%d))", heap->size, heap->size);
+         "%d", heap->size, HeapDepth(heap));
 }
 
 void HeapPrintArray(Heap *heap, int reverse)
@@ -173,6 +182,10 @@ void HeapPrintArray(Heap *heap, int reverse)
   printf("]");
 }
 
+void HeapPrintTree(Heap *heap, int reverse)
+{
+  
+}
 
 int main ()
 {
