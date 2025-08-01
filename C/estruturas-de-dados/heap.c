@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 
 #include "./heap.h"
 
@@ -20,8 +19,16 @@ int HeapSize(Heap *heap) {
   return heap->size;
 }
 
-int HeapDepth(Heap *heap) {
-  return (int) (log(heap->size) / log(2));
+int HeapMaxDepth(Heap *heap) {
+  int i = 2, total = 1, count = 0;
+
+  while (total < heap->size) {
+    total += i;
+    i *= 2;
+    count++;
+  }
+
+  return count;
 }
 
 int HeapMisplacedKeys(int* array, int size)
@@ -161,7 +168,7 @@ void HeapPrintDetails(Heap* heap)
            "ordem de heap.", misplacedKeys);
   }
   printf("\nVetor com %d elementos, representando uma árvore com profundidade "
-         "%d", heap->size, HeapDepth(heap));
+         "%d", heap->size, HeapMaxDepth(heap));
 }
 
 void HeapPrintArray(Heap *heap, int reverse)
@@ -184,7 +191,41 @@ void HeapPrintArray(Heap *heap, int reverse)
 
 void HeapPrintTree(Heap *heap, int reverse)
 {
-  
+  int n_count = 0;
+
+  for (int i = HeapMaxDepth(heap); i >= 0; i--)
+  {
+    // indentação
+    for (int j = 0; j < indentation -1; j++)
+      printf("      ");
+    if (indentation > 0)
+      printf("  ");
+
+    int prev_count = n_count;
+    while (n_count < heap->size && n_count - prev_count < i)
+    {
+      printf("%d", heap->array[n_count]);
+      n_count++;
+
+      // espaço entre números
+      if (n_count - prev_count < i)
+      {
+        if ((n_count - prev_count) % 2 != 0 && indentation != 0) {
+          for (int k = 0; k < indentation +1; k++)
+          {
+            printf("   ");
+            if (k % 2 != 0)
+              printf(" ");
+          }
+        }
+        else
+          printf("   ");
+      }
+    }
+
+    indentation--;
+    printf("\n");
+  }
 }
 
 int main ()
@@ -193,7 +234,7 @@ int main ()
   Heap *heap = InitHeap(size);
 
   for (int i = 0; i < size; i++)
-    heap->array[i] = size - i;
+    heap->array[i] = (size - i) / 10;
 
 
   HeapPrintArray(heap, 0);
@@ -221,7 +262,12 @@ int main ()
   HeapPrintArray(heap, 0);
   HeapPrintDetails(heap);
 
-  printf("\n");
+  printf("\n\nárvore da heap:\n");
+
+  HeapPrintTree(heap, 0);
+
+  Heap *a = InitHeap(15);
+  printf("%d", HeapMaxDepth(a));
 
   return 0;
 }

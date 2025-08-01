@@ -35,9 +35,10 @@ Heap* InitHeap(int size);
 int HeapSize(Heap *heap);
 
 /*
- * Retorna a profundidade da heap.
+ * Retorna a profundidade máxima da heap (no caso, a profundidade da folha mais
+ * à esquerda).
  */
-int HeapDepth(Heap *heap);
+int HeapMaxDepth(Heap *heap);
 
 /*
  * Percorre um vetor de heap iterativamente contando quantos nós tem valor maior
