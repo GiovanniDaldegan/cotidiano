@@ -20,15 +20,29 @@ int HeapSize(Heap *heap) {
 }
 
 int HeapMaxDepth(Heap *heap) {
-  int i = 2, total = 1, count = 0;
+  // inicia a contagem já contabilizando a raiz para otimizar
+  int nodes = 2, total = 1, count = 0;
 
-  while (total < heap->size) {
-    total += i;
-    i *= 2;
+  while (total < heap->size)
+  {
+    total += nodes;
+    nodes *= 2;
     count++;
   }
 
   return count;
+}
+
+int HeapMaxNodes(Heap *heap) {
+  int nodes = 2, total = 1;
+
+  while (total < heap->size)
+  {
+    total += nodes;
+    nodes *= 2;
+  }
+
+  return total;
 }
 
 int HeapMisplacedKeys(int* array, int size)
@@ -191,14 +205,16 @@ void HeapPrintArray(Heap *heap, int reverse)
 
 void HeapPrintTree(Heap *heap, int reverse)
 {
-  int n_count = 0,
-      nodes = 1;
+  int n_count = 0,  // total de nós impressos
+      nodes = 1,    // total de nós por linha
+      spacing = HeapMaxNodes(heap) / 2;  // medida de indentação e espaçamento entre
+                    // nós (coincide com a PA de total de nós: 1, 3, 7, 15, ..)
 
   for (int line_count = HeapMaxDepth(heap); line_count >= 0; line_count--)
   {
-    // indentação
-    for (int j = 0; j < line_count -1; j++)
-      printf("      ");
+    // indentação: ..., 30, 14, 6, 2, 0
+    for (int j = 0; j < spacing / 2; j++)
+      printf("    ");
     if (line_count > 0)
       printf("  ");
 
@@ -208,9 +224,13 @@ void HeapPrintTree(Heap *heap, int reverse)
       printf("%d", heap->array[n_count]);
       n_count++;
 
-      // espaço entre números
+      // espaçamento entre números: ..., 31, 15, 7, 3
       if (n_count - prev_count < nodes)
       {
+        for (int j = 0; j < spacing *2 +1; j++)
+          printf(" ");
+
+        /*
         if ((n_count - prev_count) % 2 != 0 && line_count != 0) {
           for (int k = 0; k < line_count +1; k++)
           {
@@ -221,10 +241,12 @@ void HeapPrintTree(Heap *heap, int reverse)
         }
         else
           printf("   ");
+        */
       }
     }
 
     nodes *= 2;
+    spacing /= 2;
     printf("\n");
   }
 }
