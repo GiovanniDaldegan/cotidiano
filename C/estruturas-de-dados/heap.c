@@ -191,27 +191,28 @@ void HeapPrintArray(Heap *heap, int reverse)
 
 void HeapPrintTree(Heap *heap, int reverse)
 {
-  int n_count = 0;
+  int n_count = 0,
+      nodes = 1;
 
-  for (int i = HeapMaxDepth(heap); i >= 0; i--)
+  for (int line_count = HeapMaxDepth(heap); line_count >= 0; line_count--)
   {
     // indentação
-    for (int j = 0; j < indentation -1; j++)
+    for (int j = 0; j < line_count -1; j++)
       printf("      ");
-    if (indentation > 0)
+    if (line_count > 0)
       printf("  ");
 
     int prev_count = n_count;
-    while (n_count < heap->size && n_count - prev_count < i)
+    while (n_count < heap->size && n_count - prev_count < nodes)
     {
       printf("%d", heap->array[n_count]);
       n_count++;
 
       // espaço entre números
-      if (n_count - prev_count < i)
+      if (n_count - prev_count < nodes)
       {
-        if ((n_count - prev_count) % 2 != 0 && indentation != 0) {
-          for (int k = 0; k < indentation +1; k++)
+        if ((n_count - prev_count) % 2 != 0 && line_count != 0) {
+          for (int k = 0; k < line_count +1; k++)
           {
             printf("   ");
             if (k % 2 != 0)
@@ -223,7 +224,7 @@ void HeapPrintTree(Heap *heap, int reverse)
       }
     }
 
-    indentation--;
+    nodes *= 2;
     printf("\n");
   }
 }
@@ -265,9 +266,6 @@ int main ()
   printf("\n\nárvore da heap:\n");
 
   HeapPrintTree(heap, 0);
-
-  Heap *a = InitHeap(15);
-  printf("%d", HeapMaxDepth(a));
 
   return 0;
 }
