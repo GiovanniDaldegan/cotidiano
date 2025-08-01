@@ -207,13 +207,13 @@ void HeapPrintTree(Heap *heap, int reverse)
 {
   int n_count = 0,  // total de nós impressos
       nodes = 1,    // total de nós por linha
-      spacing = HeapMaxNodes(heap) / 2;  // medida de indentação e espaçamento entre
+      spacing = HeapMaxNodes(heap);  // medida de indentação e espaçamento entre
                     // nós (coincide com a PA de total de nós: 1, 3, 7, 15, ..)
 
   for (int line_count = HeapMaxDepth(heap); line_count >= 0; line_count--)
   {
     // indentação: ..., 30, 14, 6, 2, 0
-    for (int j = 0; j < spacing / 2; j++)
+    for (int j = 0; j < spacing / 4; j++)
       printf("    ");
     if (line_count > 0)
       printf("  ");
@@ -253,7 +253,7 @@ void HeapPrintTree(Heap *heap, int reverse)
 
 int main ()
 {
-  int size = 24;
+  int size = 31;
   Heap *heap = InitHeap(size);
 
   for (int i = 0; i < size; i++)
